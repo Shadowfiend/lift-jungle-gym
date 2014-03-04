@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <style type="text/css">
+    html, body { height: 100%; }
+    #editor {
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <section id="editor" data-lift="Editor">
+    <pre class="content">
+      class Booyan {
+        def awesomeSauce = {
+          "#dan" #> "balan"
+        }
+      }
+    </pre>
+  </section>
+
+  <script src="/js/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+
+  <script type="text/javascript">
+    var editor = ace.edit(document.querySelector('#editor'));
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/scala");
+  </script>
+</body>
+</html>
