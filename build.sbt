@@ -13,7 +13,7 @@ resolvers ++= Seq(
 
 seq(webSettings :_*)
 
-scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xfatal-warnings")
+scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xfatal-warnings")
 
 libraryDependencies ++= {
   val liftVersion = "3.0-SNAPSHOT"
