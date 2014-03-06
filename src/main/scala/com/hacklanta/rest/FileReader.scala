@@ -4,13 +4,28 @@ package rest
 import java.nio.file._
 
 import scala.collection.JavaConversions._
+import scala.sys.process._
 
+import net.liftweb.common._
 import net.liftweb.http._
   import rest._
 import net.liftweb.util.Helpers._
 
+object fileEndpointDirectory extends SessionVar[Box[Path]](FileEndpoint.setUpTempDirectory)
 object FileEndpoint extends RestHelper {
-  lazy val baseDirectory = Paths.get("/Users/Shadowfiend/github/lift-jungle-gym/src/main/scala/com/hacklanta")
+  def setUpTempDirectory = {
+    for {
+      session <- S.session ?~ "No session to associate with temp directory."
+      directory <- tryo(Files.createTempDirectory(session.uniqueId))
+      // hook up docker here to do a git clone instead
+      _ = Process(
+        "git" :: "clone" :: "git://github.com/Shadowfiend/knock-me-out-lift-example.git" :: Nil,
+        directory.toFile
+      ).!
+    } yield {
+      directory.resolve("knock-me-out-lift-example/src/main/scala/code")
+    }
+  }
 
   val directoryWhitelist =
     Set(
@@ -34,17 +49,19 @@ object FileEndpoint extends RestHelper {
     def unapply(path: List[String]): Option[Path] = {
       path match {
         case "Boot.scala" :: Nil =>
-          Some(baseDirectory.resolve("../../bootstrap/liftweb/Boot.scala"))
+          fileEndpointDirectory.is.map(_.resolve("../bootstrap/liftweb/Boot.scala"))
             .filter(Files.isRegularFile(_))
 
         case directory :: file :: Nil if directoryWhitelist.contains(directory) =>
-          Files.newDirectoryStream(baseDirectory)
-            .find(_.getFileName.toString == directory)
-            .flatMap { matchingDirectory =>
-              Files.newDirectoryStream(matchingDirectory)
-                .find(_.getFileName.toString == file)
-                .filter(Files.isRegularFile(_))
-            }
+          fileEndpointDirectory.is.map(Files.newDirectoryStream _).flatMap { baseDirectory =>
+            baseDirectory
+              .find(_.getFileName.toString == directory)
+              .flatMap { matchingDirectory =>
+                Files.newDirectoryStream(matchingDirectory)
+                  .find(_.getFileName.toString == file)
+                  .filter(Files.isRegularFile(_))
+              }
+          }
 
         case _ =>
           None
