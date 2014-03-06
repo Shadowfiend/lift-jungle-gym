@@ -9,7 +9,7 @@ import net.liftweb.http._
   import rest._
 import net.liftweb.util.Helpers._
 
-object FileReader extends RestHelper {
+object FileEndpoint extends RestHelper {
   lazy val baseDirectory = Paths.get("/Users/Shadowfiend/github/lift-jungle-gym/src/main/scala/com/hacklanta")
 
   val directoryWhitelist =

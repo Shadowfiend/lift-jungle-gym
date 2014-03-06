@@ -9,7 +9,7 @@ import http._
 import sitemap._
 import Loc._
 
-import com.hacklanta.rest.FileReader
+import com.hacklanta.rest.FileEndpoint
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -25,7 +25,7 @@ class Boot {
         Menu.i("js") / "js" / **
       )
 
-    LiftRules.dispatch.append(FileReader)
+    LiftRules.dispatch.append(FileEndpoint)
 
     // set the sitemap.  Note if you don't want access control for
     // each page, just comment this line out.
