@@ -3,7 +3,7 @@
 <head>
   <style type="text/css">
     html, body { height: 100%; }
-    #editor {
+    #editor, .editor {
       height: 100%;
     }
   </style>
@@ -25,12 +25,17 @@
     </ul>
   </nav>
   <section id="editor">
+    <menu type="toolbar">
+      <li><button class="save" type="button">Save</button></li>
+    </menu>
   </section>
 
   <script src="/js/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 
   <script type="text/javascript">
-    var editor = ace.edit(document.querySelector('#editor'));
+    $('#editor').append($('<div></div>').attr('class', 'editor'))
+
+    var editor = ace.edit(document.querySelector('#editor > .editor'));
     editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/scala");
 
@@ -52,6 +57,22 @@
 
         return false;
       })
+
+      $('button.save').on('click', function() {
+        $.ajax(currentFile,
+          {
+            method: 'POST',
+            data: editor.getValue(),
+            contentType: 'text/plain; charset=UTF-8'
+          })
+          .done(function() {
+            alert('Save successful.');
+          })
+          .fail(function() {
+            alert('Failed to save!');
+          })
+      })
+    })
   </script>
 </body>
 </html>
