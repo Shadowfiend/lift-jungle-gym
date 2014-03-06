@@ -65,5 +65,26 @@ object FileReader extends RestHelper {
           code = 200
         )
       }
+
+    case "source" :: SafePath(path) Post req =>
+      req.rawInputStream.flatMap { inputStream =>
+        tryo {
+          val outputStream = Files.newOutputStream(path)
+
+          val thing = scala.collection.mutable.ArrayBuffer[Byte]()
+
+          Iterator
+            .continually(inputStream.read)
+            .takeWhile(_ != -1)
+            .foreach { stuff =>
+              outputStream.write(stuff)
+            }
+
+          inputStream.close
+          outputStream.close
+
+          OkResponse()
+        }
+      }
   }
 }
