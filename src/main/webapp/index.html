@@ -6,6 +6,38 @@
     #editor, .editor {
       height: 100%;
     }
+
+    body {
+      display: -webkit-flex;
+      -webkit-flex-direction: row;
+    }
+
+    #files {
+      -webkit-flex: 1 5 0;
+      list-style-type: none;
+    }
+    #editor {
+      -webkit-flex: 5 1 0;
+    }
+
+    li.error {
+      background: red;
+    }
+    li.error > progress {
+      visibility: hidden;
+    }
+
+    menu {
+      display: -webkit-flex;
+      -webkit-flex-direction: row;
+      -webkit-justify-content: flex-end;
+
+      padding-right: 2em;
+    }
+    menu > li {
+      -webkit-flex: 0 0 auto;
+      list-style-type: none;
+    }
   </style>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
@@ -26,7 +58,11 @@
   </nav>
   <section id="editor">
     <menu type="toolbar">
+      <li><button class="test" type="button">Test</button></li>
       <li><button class="save" type="button">Save</button></li>
+      <li class="build-status">
+        <progress class="build-status" max="100" value="0">Building...</progress>
+      </li>
     </menu>
   </section>
 
