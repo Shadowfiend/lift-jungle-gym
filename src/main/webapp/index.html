@@ -80,16 +80,57 @@
 
     var currentFile = null;
 
+    $(document).on('sbt-line-received', function(_, line) {
+      console.log(line);
+    })
+
+    var sbtStarting = false;
     var sbtRunning = false;
-    function runSbt() {
-      if (! sbtRunning) {
-        sbtRunner.startSbt("").then(function(line) {
-          console.log(line);
-          // emit event
+    var onRunningCallbacks = [];
+    function runSbt(onRunning) {
+      if (! sbtStarting && ! sbtRunning) {
+        onRunningCallbacks.push(onRunning);
+        $(document).one('sbt-line-received', function() {
+          sbtRunning = true;
+          sbtStarting = false;
+
+          onRunningCallbacks.forEach(function(fn) { fn() });
+          onRunningCallbacks = [];
         });
 
-        sbtRunning = true;
+        sbtRunner.startSbt("").then(function(line) {
+          $(document).trigger('sbt-line-received', line)
+        });
+      } else {
+        onRunning();
       }
+
+      sbtStarting = true;
+    }
+    function compile() {
+      runSbt(function() {
+        $('li.build-status')
+          .removeClass('error');
+        $('progress.build-status')
+          .removeAttr('value');
+
+        sbtRunner.runSbtCommand('compile');
+
+        function compileComplete(_, sbtLine) {
+          var match = sbtLine.match(/\[(success|error)\]/)
+          if (match) {
+            $('progress.build-status').attr('value', '100')
+
+            $(document).off('sbt-line-received', compileComplete);
+
+            if (match[1] == 'error') {
+              $('li.build-status').addClass('error')
+            }
+          }
+        }
+
+        $(document).on('sbt-line-received', compileComplete);
+      });
     }
 
     $(document).ready(function() {
@@ -117,8 +158,7 @@
             contentType: 'text/plain; charset=UTF-8'
           })
           .done(function() {
-            alert('Save successful.');
-            runSbt();
+            compile();
           })
           .fail(function() {
             alert('Failed to save!');
