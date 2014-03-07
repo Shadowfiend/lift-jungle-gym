@@ -47,7 +47,7 @@ object Editor {
         session <- S.session
         directory <- projectBaseDirectory.is
         outputQueue = new LinkedBlockingQueue[Option[String]]()
-        sbtProcess = Process("sbt" :: Nil, directory.toFile)
+        sbtProcess = Process("sbt" :: "-Dsbt.log.format=false" :: Nil, directory.toFile)
         roundtripJs =
           session.buildRoundtrip(List[RoundTripInfo](
             "startSbt" -> { _: String =>
