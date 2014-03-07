@@ -32,6 +32,9 @@
 
   <script src="/js/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 
+  <script type="text/javascript" data-lift="Editor.sbtRunner">
+  </script>
+
   <script type="text/javascript">
     $('#editor').append($('<div></div>').attr('class', 'editor'))
 
@@ -40,6 +43,18 @@
     editor.getSession().setMode("ace/mode/scala");
 
     var currentFile = null;
+
+    var sbtRunning = false;
+    function runSbt() {
+      if (! sbtRunning) {
+        sbtRunner.startSbt("").then(function(line) {
+          console.log(line);
+          // emit event
+        });
+
+        sbtRunning = true;
+      }
+    }
 
     $(document).ready(function() {
       $('#files').on('click', 'a[href]', function() {
@@ -67,6 +82,7 @@
           })
           .done(function() {
             alert('Save successful.');
+            runSbt();
           })
           .fail(function() {
             alert('Failed to save!');
