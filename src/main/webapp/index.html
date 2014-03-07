@@ -180,7 +180,7 @@
 
         $.get(this.getAttribute('href'),
             function(contents) {
-              editor.setValue(contents)
+              editor.setValue(contents, -1);
               currentFile = href;
             }
           )
