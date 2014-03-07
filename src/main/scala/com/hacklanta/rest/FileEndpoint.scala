@@ -11,7 +11,8 @@ import net.liftweb.http._
   import rest._
 import net.liftweb.util.Helpers._
 
-object fileEndpointDirectory extends SessionVar[Box[Path]](FileEndpoint.setUpTempDirectory)
+object projectBaseDirectory extends SessionVar[Box[Path]](FileEndpoint.setUpTempDirectory)
+object fileEndpointDirectory extends SessionVar[Box[Path]](projectBaseDirectory.is.map(_.resolve("src/main/scala/com/hacklanta")))
 object FileEndpoint extends RestHelper {
   def setUpTempDirectory = {
     for {
@@ -19,11 +20,11 @@ object FileEndpoint extends RestHelper {
       directory <- tryo(Files.createTempDirectory(session.uniqueId))
       // hook up docker here to do a git clone instead
       _ = Process(
-        "git" :: "clone" :: "git://github.com/Shadowfiend/knock-me-out-lift-example.git" :: Nil,
+        "git" :: "clone" :: "/Users/Shadowfiend/test.git" :: Nil,
         directory.toFile
       ).!
     } yield {
-      directory.resolve("knock-me-out-lift-example/src/main/scala/code")
+      directory.resolve("test")
     }
   }
 
@@ -68,7 +69,6 @@ object FileEndpoint extends RestHelper {
       }
     }
   }
-
 
   serve {
     case "source" :: SafePath(path) Get _ =>
