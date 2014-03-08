@@ -38,7 +38,14 @@ object Editor {
             }
           outputLineQueue.add(None)
         },
-        _ => ()
+        { stderrStream =>
+          val reader = new BufferedReader(new InputStreamReader(stderrStream))
+
+          Stream
+            .continually(reader.readLine)
+            .takeWhile(_ != null)
+            .foreach(println _)
+        }
       )
     }
 
