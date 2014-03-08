@@ -31,6 +31,7 @@ $(document).ready(function() {
           $(document).trigger('editor-contents-saved');
         }
       }
+
       for (filename in editorsByFilename) {
         pendingSaves++;
 
@@ -58,6 +59,11 @@ $(document).ready(function() {
             };
           })
         );
+      }
+    })
+    .on('errors-cleared', function() {
+      for (var filename in editorsByFilename) {
+        editorsByFilename[filename].getSession().setAnnotations([]);
       }
     });
 });

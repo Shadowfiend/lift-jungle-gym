@@ -19,6 +19,8 @@ $(document).ready(function() {
 
           if (match[1] == 'error') {
             $('li.build-status').addClass('error')
+          } else {
+            $(document).trigger('errors-cleared')
           }
         }
       }
