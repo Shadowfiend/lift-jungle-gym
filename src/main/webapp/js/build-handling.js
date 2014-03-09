@@ -6,7 +6,7 @@ $(document).ready(function() {
       $('progress.build-status')
         .removeAttr('value');
 
-      sbt.runSbtCommand('compile');
+      sbt.runCommand('compile');
 
       var errors = [];
 

@@ -24,7 +24,7 @@
           whenConnectedCallbacks.forEach(function(fn) { fn(sbtRunner) });
         })
 
-        sbtRunner.startSbt("").then(function(line) {
+        sbtRunner.connect("").then(function(line) {
           $(document).trigger('sbt-line-received', line);
         });
 
