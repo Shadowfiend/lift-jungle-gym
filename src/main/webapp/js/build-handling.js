@@ -53,6 +53,7 @@ $(document).ready(function() {
             delete error.file;
           });
 
+          $(document).trigger('errors-cleared');
           for (var file in errorsByFile) {
             $(document).trigger('errors-received', {
               filename: file,
