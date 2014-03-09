@@ -47,7 +47,6 @@ $(document).ready(function() {
           filename = errorInfo.filename;
 
       var editor = editorsByFilename['/source/snippet/Editor.scala'];
-      console.log('got', filename, errors, editor, editorsByFilename)
       if (editor) {
         editor.getSession().setAnnotations(
           errors.map(function(error) {
