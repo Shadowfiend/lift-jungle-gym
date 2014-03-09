@@ -6,7 +6,7 @@ import net.liftweb.http._
 import net.liftweb.util.Helpers._
 
 import lib.SbtInteractor
-import com.hacklanta.rest.fileEndpointDirectory
+import com.hacklanta.rest.{fileEndpointDirectory,bootEndpointDirectory}
 
 object interactor extends SessionVar[Box[SbtInteractor]](SbtInteractor())
 object Editor {
@@ -19,13 +19,16 @@ object Editor {
           session.buildRoundtrip(List[RoundTripInfo](
             "connect" -> { _: String =>
               for {
-                endpointDirectory <- fileEndpointDirectory.is.toStream
-                stringToStrip = endpointDirectory + "/"
+                fileEndpoint <- fileEndpointDirectory.is.toStream
+                bootEndpoint <- bootEndpointDirectory.is.toStream
+                fileStringToStrip = fileEndpoint + "/"
+                bootStringToStrip = bootEndpoint + "/"
                 possibleLine <- interactor.output
                 line <- possibleLine
               } yield {
                 line
-                  .replace(stringToStrip, "")
+                  .replace(fileStringToStrip, "")
+                  .replace(bootStringToStrip, "")
               }
             },
             "runCommand" -> interactor.runCommand _,
