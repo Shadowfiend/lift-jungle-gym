@@ -15,7 +15,7 @@ $(document).ready(function() {
         if (match) {
           $('progress.build-status').attr('value', '100')
 
-          $(document).off('sbt-line-received.compile', compileComplete);
+          $(document).off('sbt-line-received.compile');
 
           if (match[1] == 'error') {
             $('li.build-status').addClass('error')
