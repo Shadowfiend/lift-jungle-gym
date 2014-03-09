@@ -5,7 +5,7 @@ $(document).ready(function() {
   var fileApiPrefix = $('body').data('file-api-prefix');
 
   function doSave(documentInfo) {
-    $.ajax(documentInfo.filename,
+    $.ajax(fileApiPrefix + documentInfo.filename,
       {
         method: 'POST',
         data: documentInfo.content,
