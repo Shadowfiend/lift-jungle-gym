@@ -1,25 +1,58 @@
 $(document).ready(function() {
-  $('#editor').append($('<div></div>').attr('class', 'editor'))
-
-  var editor = ace.edit(document.querySelector('#editor > .editor'));
-  editor.setTheme("ace/theme/monokai");
-  editor.getSession().setMode("ace/mode/scala");
-
-  var editorsByFilename = {}
+  var editorInfoByFilename = {};
 
   $(document)
     .on('show-editor-for', function(_, filename) {
-      if (editorsByFilename[filename]) {
-        // focus editor for this filename
+      var existingEditorInfo = editorInfoByFilename[filename];
+
+      $('ul.tab-contents > .current, menu.tabs > .current')
+        .removeClass('current');
+
+      if (existingEditorInfo) {
+        existingEditorInfo.$contents.add(existingEditorInfo.$tab)
+          .addClass('current');
       } else {
+        var $contents =
+          $('<li>')
+            .attr('class', 'tab-contents editor current loading')
+            .append(
+              $('<div></div>')
+                .attr('class', 'editor')
+            );
+        var $tab =
+          $('<li>')
+            .attr('class', 'tab editor current loading')
+            .append(
+              $('<button>')
+                .click(function() {
+                  $(document).trigger('show-editor-for', filename);
+                })
+                .text(filename)
+            )
+
+        $('ul.tab-contents')
+          .append($contents);
+        $('menu.tabs')
+          .append($tab);
+
+        var editor = ace.edit($contents.find('div.editor')[0]);
+        editor.setTheme('ace/theme/monokai');
+        editor.getSession().setMode('ace/mode/scala');
+
         $(document).trigger('load-content-for-document', {
           filename: filename,
           onComplete: function(contents) {
             // change this to create the editor tab, etc
             editor.setValue(contents, -1);
 
-            editorsByFilename[filename] = editor;
-           }
+            editorInfoByFilename[filename] = {
+              editor: editor,
+              $contents: $contents,
+              $tab: $tab
+            };
+
+            $contents.add($tab).removeClass('loading');
+          }
         })
       }
     })

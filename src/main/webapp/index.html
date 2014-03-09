@@ -3,8 +3,26 @@
 <head>
   <style type="text/css">
     html, body { height: 100%; }
-    #editor, .editor {
+    #editor, .editor, .tab-contents {
       height: 100%;
+    }
+
+    ul.tab-contents, li.tab-contents {
+      display: block;
+      list-style-type: none;
+
+      margin: 0;
+      padding: 0;
+    }
+
+    li.tab-contents {
+      display: none;
+    }
+    li.tab-contents.current {
+      display: block;
+    }
+    li.tab-contents.loading > .editor {
+      visibility: hidden;
     }
 
     body {
@@ -30,7 +48,6 @@
     menu {
       display: -webkit-flex;
       -webkit-flex-direction: row;
-      -webkit-justify-content: flex-end;
 
       padding-right: 2em;
     }
@@ -38,9 +55,12 @@
       -webkit-flex: 0 0 auto;
       list-style-type: none;
     }
+    #actions {
+      -webkit-justify-content: flex-end;
+    }
   </style>
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.js"></script>
 </head>
 <body data-debug>
   <nav id="files">
@@ -57,13 +77,18 @@
     </ul>
   </nav>
   <section id="editor">
-    <menu type="toolbar">
+    <menu id="actions" type="toolbar">
       <li><button class="test" type="button">Test</button></li>
       <li><button class="save" type="button">Save</button></li>
       <li class="build-status">
         <progress class="build-status" max="100" value="0">Building...</progress>
       </li>
     </menu>
+
+    <menu class="tabs" type="toolbar"></menu>
+
+    <ul class="tab-contents">
+    </ul>
   </section>
 
   <script type="text/javascript" data-lift="Editor.sbtRunner"></script>
