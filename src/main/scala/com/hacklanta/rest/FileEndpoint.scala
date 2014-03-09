@@ -14,6 +14,7 @@ import net.liftweb.util.Helpers._
 
 object projectBaseDirectory extends SessionVar[Box[Path]](FileEndpoint.setUpTempDirectory)
 object fileEndpointDirectory extends SessionVar[Box[Path]](projectBaseDirectory.is.map(_.resolve("src/main/scala/com/hacklanta")))
+object bootEndpointDirectory extends SessionVar[Box[Path]](projectBaseDirectory.is.map(_.resolve("src/main/scala/bootstrap/liftweb")))
 object FileEndpoint extends RestHelper {
   val apiPrefix = "source"
 
@@ -58,7 +59,7 @@ object FileEndpoint extends RestHelper {
     def unapply(path: List[String]): Option[Path] = {
       path match {
         case "Boot.scala" :: Nil =>
-          projectBaseDirectory.is.map(_.resolve("src/main/scala/bootstrap/liftweb/Boot.scala"))
+          bootEndpointDirectory.is.map(_.resolve("Boot.scala"))
             .filter(Files.isRegularFile(_))
 
         case directory :: file :: Nil if directoryWhitelist.contains(directory) =>
