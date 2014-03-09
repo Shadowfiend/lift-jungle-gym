@@ -50,7 +50,7 @@ object FileEndpoint extends RestHelper {
     def unapply(path: List[String]): Option[Path] = {
       path match {
         case "Boot.scala" :: Nil =>
-          fileEndpointDirectory.is.map(_.resolve("../bootstrap/liftweb/Boot.scala"))
+          projectBaseDirectory.is.map(_.resolve("src/main/scala/bootstrap/liftweb/Boot.scala"))
             .filter(Files.isRegularFile(_))
 
         case directory :: file :: Nil if directoryWhitelist.contains(directory) =>
