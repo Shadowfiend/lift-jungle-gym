@@ -2,6 +2,8 @@ $(document).ready(function() {
   var pendingDocumentLoads = {};
   var pendingDocumentSaves = {};
 
+  var fileApiPrefix = $('body').data('file-api-prefix');
+
   function doSave(documentInfo) {
     $.ajax(documentInfo.filename,
       {
@@ -37,7 +39,7 @@ $(document).ready(function() {
 
       if (! pendingLoad) {
         pendingLoad =
-          $.get(documentInfo.filename)
+          $.get(fileApiPrefix + documentInfo.filename)
             .always(clearPendingLoad)
 
         pendingDocumentLoads[documentInfo.filename] = pendingLoad;

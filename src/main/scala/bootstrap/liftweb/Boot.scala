@@ -26,6 +26,7 @@ class Boot {
       )
 
     LiftRules.dispatch.append(FileEndpoint)
+    LiftRules.dataAttributeProcessor.append(FileEndpoint.apiPrefixProcessor)
 
     // set the sitemap.  Note if you don't want access control for
     // each page, just comment this line out.

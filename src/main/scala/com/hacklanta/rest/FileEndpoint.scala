@@ -9,11 +9,19 @@ import scala.sys.process._
 import net.liftweb.common._
 import net.liftweb.http._
   import rest._
+  import LiftRules._
 import net.liftweb.util.Helpers._
 
 object projectBaseDirectory extends SessionVar[Box[Path]](FileEndpoint.setUpTempDirectory)
 object fileEndpointDirectory extends SessionVar[Box[Path]](projectBaseDirectory.is.map(_.resolve("src/main/scala/com/hacklanta")))
 object FileEndpoint extends RestHelper {
+  val apiPrefix = "source"
+
+  def apiPrefixProcessor: DataAttributeProcessor = {
+    case ("lift-file-api-prefix", _, element, _) =>
+      element % ("data-file-api-prefix" -> s"/$apiPrefix/")
+  }
+
   def setUpTempDirectory = {
     for {
       session <- S.session ?~ "No session to associate with temp directory."
@@ -71,7 +79,7 @@ object FileEndpoint extends RestHelper {
   }
 
   serve {
-    case "source" :: SafePath(path) Get _ =>
+    case `apiPrefix` :: SafePath(path) Get _ =>
       tryo {
         StreamingResponse(
           data = Files.newInputStream(path),
@@ -83,7 +91,7 @@ object FileEndpoint extends RestHelper {
         )
       }
 
-    case "source" :: SafePath(path) Post req =>
+    case `apiPrefix` :: SafePath(path) Post req =>
       req.rawInputStream.flatMap { inputStream =>
         tryo {
           val outputStream = Files.newOutputStream(path)
