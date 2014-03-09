@@ -34,9 +34,7 @@ $(document).ready(function() {
             errors.push(currentError);
           }
 
-          var pathToFile = errorStartMatch[1],
-              filenameMatch = pathToFile.match(/[^\/]+$/),
-              filename = filenameMatch ? filenameMatch[0] : pathToFile;
+          var filename = errorStartMatch[1];
 
           currentError = {
             file: filename,
