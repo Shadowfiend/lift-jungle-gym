@@ -32,7 +32,7 @@ object FileEndpoint extends RestHelper {
         directory.toFile
       ).!
     } yield {
-      directory.resolve("test")
+      directory.resolve("test").toRealPath()
     }
   }
 
