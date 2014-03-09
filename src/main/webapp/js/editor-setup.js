@@ -65,12 +65,12 @@ $(document).ready(function() {
         }
       }
 
-      for (filename in editorsByFilename) {
+      for (filename in editorInfoByFilename) {
         pendingSaves++;
 
         $(document).trigger('save-content-for-document', {
           filename: filename,
-          content: editorsByFilename[filename].getValue(),
+          content: editorInfoByFilename[filename].editor.getValue(),
           onComplete: fileSaved
         });
       }
@@ -79,7 +79,7 @@ $(document).ready(function() {
       var errors = errorInfo.errors,
           filename = errorInfo.filename;
 
-      var editor = editorsByFilename['/source/snippet/Editor.scala'];
+      var editor = editorInfoByFilename[filename].editor;
       if (editor) {
         editor.getSession().setAnnotations(
           errors.map(function(error) {
@@ -94,8 +94,8 @@ $(document).ready(function() {
       }
     })
     .on('errors-cleared', function() {
-      for (var filename in editorsByFilename) {
-        editorsByFilename[filename].getSession().setAnnotations([]);
+      for (var filename in editorInfoByFilename) {
+        editorInfoByFilename[filename].editor.getSession().setAnnotations([]);
       }
     });
 });
