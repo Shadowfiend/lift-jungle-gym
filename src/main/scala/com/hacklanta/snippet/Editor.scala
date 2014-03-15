@@ -1,15 +1,37 @@
 package com.hacklanta
 package snippet
 
+import java.nio.file._
+
+import scala.collection.JavaConversions._
+
 import net.liftweb.common._
 import net.liftweb.http._
-import net.liftweb.util.Helpers._
+import net.liftweb.util._
+  import Helpers._
 
 import lib.SbtInteractor
 import com.hacklanta.rest.{fileEndpointDirectory,bootEndpointDirectory}
 
 object interactor extends SessionVar[Box[SbtInteractor]](SbtInteractor())
 object Editor {
+  def availableSnippets = {
+    ClearClearable andThen
+    "li" #> {
+      for {
+        packageDirectory <- fileEndpointDirectory.is.toList
+        snippetDirectory = packageDirectory.resolve("snippet")
+        directoryStream = Files.newDirectoryStream(snippetDirectory)
+        entry <- directoryStream
+          if Files.isRegularFile(entry)
+        filename = entry.getFileName.toString
+      } yield {
+        "a *" #> filename &
+        "a [href]" #> s"snippet/$filename"
+      }
+    }
+  }
+
   def sbtRunner = {
     val runnerJs =
       for {
