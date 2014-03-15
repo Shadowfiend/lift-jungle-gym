@@ -13,10 +13,12 @@ import net.liftweb.http._
 import net.liftweb.util.Helpers._
 
 object projectBaseDirectory extends SessionVar[Box[Path]](FileEndpoint.setUpTempDirectory)
-object fileEndpointDirectory extends SessionVar[Box[Path]](projectBaseDirectory.is.map(_.resolve("src/main/scala/com/hacklanta")))
+object fileEndpointDirectory extends SessionVar[Box[Path]](projectBaseDirectory.is.map(_.resolve("src/main/scala/code")))
 object bootEndpointDirectory extends SessionVar[Box[Path]](projectBaseDirectory.is.map(_.resolve("src/main/scala/bootstrap/liftweb")))
 object FileEndpoint extends RestHelper {
   val apiPrefix = "source"
+
+  val githubRepository = ("Shadowfiend", "knock-me-out-lift-example")
 
   def apiPrefixProcessor: DataAttributeProcessor = {
     case ("lift-file-api-prefix", _, element, _) =>
@@ -26,14 +28,15 @@ object FileEndpoint extends RestHelper {
   def setUpTempDirectory = {
     for {
       session <- S.session ?~ "No session to associate with temp directory."
+      (githubUser, repositoryName) = githubRepository
       directory <- tryo(Files.createTempDirectory(session.uniqueId))
       // hook up docker here to do a git clone instead
       _ = Process(
-        "git" :: "clone" :: "/Users/Shadowfiend/test.git" :: Nil,
+        "git" :: "clone" :: s"git://github.com/$githubUser/$repositoryName.git" :: Nil,
         directory.toFile
       ).!
     } yield {
-      directory.resolve("test").toRealPath()
+      directory.resolve(repositoryName).toRealPath()
     }
   }
 
