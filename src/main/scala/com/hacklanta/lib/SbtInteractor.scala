@@ -25,7 +25,16 @@ object SbtInteractor {
     for {
       directory <- projectBaseDirectory.is
       outputQueue = new LinkedBlockingQueue[Option[String]]()
-      sbtProcess = Process("sbt" :: "-Dsbt.log.format=false" :: Nil, directory.toFile)
+      sbtProcess = Process(
+        "docker" :: "run" ::
+          "-p" :: s"${dockerPort.is.toString}:8080" ::
+          "-v" :: s"${directory.toString}:/mnt/code:rw" ::
+          "-w" :: "/mnt/code" ::
+          "-i" ::
+          "-t" :: "shadowfiend/lift-jungle-gym" ::
+          "sbt" :: "-Dsbt.log.format=false" :: Nil,
+        directory.toFile
+      )
 
       protoInteractor = new SbtInteractor(outputQueue)
     } yield {
