@@ -31,9 +31,9 @@ object Previewer {
         // Wait for two successes to arrive, since the first one is a
         // successful stop and the second a successful start.
         outputStream
-          .takeWhile(_.map(! _.startsWith("[success]")) getOrElse false)
-          .take(1)
-          .takeWhile(_.map(! _.startsWith("[success]")) getOrElse false)
+          .dropWhile(_.map(! _.startsWith("[success]")) getOrElse false)
+          .drop(1)
+          .dropWhile(_.map(! _.startsWith("[success]")) getOrElse false)
 
         PreviewLaunched(previewHost)
       }
