@@ -19,7 +19,7 @@ class LiftEvent(event:String, data:JObject = JObject(List())) extends JsCmd {
 class BasicLiftEvent(event: String = null) extends JsCmd {
   implicit val formats = DefaultFormats
 
-  private lazy val eventName = Option(event) getOrElse BasicLiftEvent.eventNameFromObject(this)
+  private val eventName = Option(event) getOrElse BasicLiftEvent.eventNameFromObject(this)
 
   override val toJsCmd = {
     Call("liftAjax.event", eventName, decompose(this)).cmd.toJsCmd
@@ -28,6 +28,8 @@ class BasicLiftEvent(event: String = null) extends JsCmd {
 object BasicLiftEvent {
   def eventNameFromObject(eventObject: BasicLiftEvent) = {
     eventObject.getClass.getName
+      .split('.')
+      .last
       .replaceAll("([A-Z][a-z\\d]+)(?=([A-Z][a-z\\d]+))", "$1-")
       .toLowerCase
   }
