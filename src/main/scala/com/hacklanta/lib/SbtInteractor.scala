@@ -9,8 +9,11 @@ import scala.sys.process._
 
 import net.liftweb.actor.LAScheduler
 import net.liftweb.common._
+import net.liftweb.http.{LiftSession,SessionVar}
 
 import rest.projectBaseDirectory
+
+object interactor extends SessionVar[Box[SbtInteractor]](SbtInteractor())
 
 object SbtInteractor {
   val containerProjectDirectory = "/mnt/code"

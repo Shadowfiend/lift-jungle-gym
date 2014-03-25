@@ -10,10 +10,9 @@ import net.liftweb.http._
 import net.liftweb.util._
   import Helpers._
 
-import lib.SbtInteractor
+import lib._
 import com.hacklanta.rest._
 
-object interactor extends SessionVar[Box[SbtInteractor]](SbtInteractor())
 object Editor {
   def availableSnippets = {
     ClearClearable andThen
