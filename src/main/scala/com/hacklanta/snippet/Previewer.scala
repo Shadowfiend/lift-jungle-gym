@@ -29,8 +29,11 @@ object Previewer {
         interactor.runCommand("container:start")
 
         // Wait for two successes to arrive, since the first one is a
-        // successful stop and the second a successful start.
+        // successful stop and the second a successful start. We also
+        // drop the first entry, which is likely the success of the last
+        // command.
         outputStream
+          .drop(1)
           .dropWhile(_.map(! _.startsWith("[success]")) getOrElse false)
           .drop(1)
           .dropWhile(_.map(! _.startsWith("[success]")) getOrElse false)
