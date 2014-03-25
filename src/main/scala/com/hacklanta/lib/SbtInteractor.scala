@@ -43,12 +43,15 @@ object SbtInteractor {
 
       protoInteractor = new SbtInteractor(outputQueue)
     } yield {
-      sbtProcess.run(
-        bidirectionalProcessIo(
-          protoInteractor.setInputStream _,
-          outputQueue
+      protoInteractor.process =
+        Option(
+          sbtProcess.run(
+            bidirectionalProcessIo(
+              protoInteractor.setInputStream _,
+              outputQueue
+            )
+          )
         )
-      )
 
       protoInteractor
     }
@@ -95,6 +98,12 @@ object SbtInteractor {
 class SbtInteractor(private var outputQueue: LinkedBlockingQueue[Option[String]]) {
   private var input: Option[PrintStream] = None
   private var pendingCommands = List[String]()
+
+  /**
+   * Process instance associated with running sbt docker, None if there
+   * is no started process yet.
+   */
+  @volatile var process: Option[Process] = None
 
   /**
    * Provides the sbt output for this interactor as a {Stream[String]} that
@@ -147,6 +156,6 @@ class SbtInteractor(private var outputQueue: LinkedBlockingQueue[Option[String]]
   }
 
   def stop() = {
-    input.map(_.close)
+    process.foreach(_.destroy())
   }
 }
