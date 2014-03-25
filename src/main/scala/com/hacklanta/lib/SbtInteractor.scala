@@ -54,6 +54,11 @@ object SbtInteractor {
     }
   }
 
+  def cleanUpInteractor(session: LiftSession) = {
+    if (interactor.set_?)
+      interactor.is.map(_.stop())
+  }
+
   private def bidirectionalProcessIo(setStdinStream: (PrintStream)=>Unit, outputLineQueue: BlockingQueue[Option[String]]) = {
     new ProcessIO(
       { runningStdinStream =>

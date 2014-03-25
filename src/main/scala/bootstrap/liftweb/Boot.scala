@@ -9,6 +9,7 @@ import http._
 import sitemap._
 import Loc._
 
+import com.hacklanta.lib.SbtInteractor
 import com.hacklanta.rest.FileEndpoint
 
 /**
@@ -34,5 +35,7 @@ class Boot {
 
     // Force the request to be UTF-8
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
+
+    LiftSession.onAboutToShutdownSession ::= SbtInteractor.cleanUpInteractor
   }
 }
