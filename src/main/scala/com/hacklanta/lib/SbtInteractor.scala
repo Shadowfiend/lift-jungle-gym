@@ -147,6 +147,7 @@ class SbtInteractor(private var outputQueue: LinkedBlockingQueue[Option[String]]
   }
 
   def stop() = {
+    runCommand("exit")
     input.map(_.close)
   }
 }
