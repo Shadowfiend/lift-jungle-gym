@@ -11,7 +11,7 @@ import net.liftweb.util._
   import Helpers._
 
 import lib.SbtInteractor
-import com.hacklanta.rest.{fileEndpointDirectory,bootEndpointDirectory}
+import com.hacklanta.rest._
 
 object interactor extends SessionVar[Box[SbtInteractor]](SbtInteractor())
 object Editor {
@@ -32,6 +32,16 @@ object Editor {
     }
   }
 
+  private def containerEndpointFor(absoluteProjectEndpoint: Box[Path]): Stream[String] = {
+    for {
+      projectBaseDirectory <- projectBaseDirectory.is.toStream
+      absoluteProjectEndpoint <- absoluteProjectEndpoint.toStream
+      relativeProjectEndpoint = projectBaseDirectory.relativize(absoluteProjectEndpoint)
+    } yield {
+      s"${SbtInteractor.containerProjectDirectory}/$relativeProjectEndpoint/"
+    }
+  }
+
   def sbtRunner = {
     val runnerJs =
       for {
@@ -41,10 +51,8 @@ object Editor {
           session.buildRoundtrip(List[RoundTripInfo](
             "connect" -> { _: String =>
               for {
-                fileEndpoint <- fileEndpointDirectory.is.toStream
-                bootEndpoint <- bootEndpointDirectory.is.toStream
-                fileStringToStrip = fileEndpoint + "/"
-                bootStringToStrip = bootEndpoint + "/"
+                fileStringToStrip <- containerEndpointFor(fileEndpointDirectory.is)
+                bootStringToStrip <- containerEndpointFor(bootEndpointDirectory.is)
                 possibleLine <- interactor.output
                 line <- possibleLine
               } yield {
