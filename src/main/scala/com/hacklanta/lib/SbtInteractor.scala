@@ -13,6 +13,8 @@ import net.liftweb.common._
 import rest.projectBaseDirectory
 
 object SbtInteractor {
+  val containerProjectDirectory = "/mnt/code"
+
   /**
    * Build an SbtInteractor and kicks off an sbt process; the returned
    * SbtInteractor won't be 100% ready to rock, but methods called on it
@@ -28,8 +30,8 @@ object SbtInteractor {
       sbtProcess = Process(
         "docker" :: "run" ::
           "-p" :: s"${dockerPort.is.toString}:8080" ::
-          "-v" :: s"${directory.toString}:/mnt/code:rw" ::
-          "-w" :: "/mnt/code" ::
+          "-v" :: s"${directory.toString}:$containerProjectDirectory:rw" ::
+          "-w" :: containerProjectDirectory ::
           "-i" ::
           "-t" :: "shadowfiend/lift-jungle-gym" ::
           "sbt" :: "-Dsbt.log.format=false" :: Nil,
