@@ -95,24 +95,11 @@
 
   <script src="/js/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
   <script src="/js/lift-ajax-event-handling.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/file-handling.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/editor-setup.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/document-content-handling.js" type="text/javascript" charset="utf-8"></script>
   <script src="/js/sbt.js" type="text/javascript" charset="utf-8"></script>
   <script src="/js/build-handling.js" type="text/javascript" charset="utf-8"></script>
   <script src="/js/preview-handling.js" type="text/javascript" charset="utf-8"></script>
-  <script src="/js/document-content-handling.js" type="text/javascript" charset="utf-8"></script>
-  <script src="/js/editor-setup.js" type="text/javascript" charset="utf-8"></script>
-
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('#files').on('click', 'a[href]', function() {
-        $(document).trigger('show-editor-for', this.getAttribute('href'));
-
-        return false;
-      })
-
-      $('button.save').on('click', function() {
-        $(document).trigger('save-editor-contents');
-      })
-    })
-  </script>
 </body>
 </html>
